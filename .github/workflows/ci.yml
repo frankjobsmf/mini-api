@@ -7,12 +7,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-test-docker:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: ./mini-api
+        working-directory: ./mini-api   # 👈 tu app está en la subcarpeta mini-api
 
     steps:
       - name: Checkout repo
@@ -31,3 +31,19 @@ jobs:
 
       - name: Run tests
         run: npm run test -- --ci --coverage
+
+      # 🔹 Build Docker image
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/mini-api:latest .
+        working-directory: ./mini-api
+
+      # 🔹 Login en Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 🔹 Push de la imagen
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/mini-api:latest
