@@ -9,10 +9,11 @@ on:
 jobs:
   build-test-docker:
     runs-on: ubuntu-latest
+    environment: DOCKERHUB
 
     defaults:
       run:
-        working-directory: ./mini-api   # 👈 tu app está en la subcarpeta mini-api
+        working-directory: ./mini-api
 
     steps:
       - name: Checkout repo
